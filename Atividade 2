@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <string.h>
+
+void swap(char **a, char **b) {
+    char *temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(char **arr, int low, int high) {
+    char *pivot = arr[high];
+    int i = (low - 1);
+
+    for (int j = low; j <= high - 1; j++) {
+        if (strcmp(arr[j], pivot) < 0) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void quicksort(char **arr, int low, int high, int *comparacoes, int *trocas) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quicksort(arr, low, pi - 1, comparacoes, trocas);
+        quicksort(arr, pi + 1, high, comparacoes, trocas);
+        (*comparacoes) += high - low;
+        (*trocas)++;
+    }
+}
+
+int main() {
+    char *arr[20] = {
+        "maca", "banana", "pera", "uva", "laranja", "abacaxi", "limao", "manga", "abacate", "kiwi",
+        "cereja", "morango", "pessego", "goiaba", "melancia", "framboesa", "amora", "caqui", "figo", "papaya"
+    };
+
+    int comparacoes = 0;
+    int trocas = 0;
+
+    int tamanho = sizeof(arr) / sizeof(arr[0]);
+    quicksort(arr, 0, tamanho - 1, &comparacoes, &trocas);
+
+    printf("Numero de trocas: %d\n", trocas);
+    printf("Numero de comparacoes: %d\n", comparacoes);
+    printf("Vetor ordenado:\n");
+
+    for (int i = 0; i < tamanho; i++) {
+        printf("(%d) %s\n", i + 1, arr[i]);
+    }
+
+    int medianaIndex = tamanho / 2;
+    if (tamanho % 2 == 0) {
+        // Mediana de um número par de elementos é a média dos dois elementos do meio
+        char *mediana1 = arr[medianaIndex - 1];
+        char *mediana2 = arr[medianaIndex];
+        printf("Mediana: %s e %s\n", mediana1, mediana2);
+    } else {
+        // Mediana de um número ímpar de elementos é o elemento do meio
+        char *mediana = arr[medianaIndex];
+        printf("Mediana: %s\n", mediana);
+    }
+
+    return 0;
